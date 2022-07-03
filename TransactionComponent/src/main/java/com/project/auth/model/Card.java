@@ -6,37 +6,41 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import com.fasterxml.jackson.databind.annotation.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.*;
 
-@Entity
-@Setter
-@Getter
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Card {
+
 
 	@Id
 	@GeneratedValue 
 	private Long id;
+	@JsonProperty("numeroCartao")
 	private String number;
+	@JsonProperty("valor")
 	private Double amount;
+	@JsonProperty("senhaCartao")
 	private String password;
-	@Override
-	public int hashCode() {
-		return Objects.hash(amount, number, password);
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Card other = (Card) obj;
-		return amount >= other.amount && Objects.equals(number, other.number)
-				&& Objects.equals(password, other.password);
-	}
+	
+	@JsonProperty("senha")
+    public String getSenha() {
+      return password;
+    }
+
+    public void setSenha(String password) {
+      this.password = password;
+    }
 	
 	
 	

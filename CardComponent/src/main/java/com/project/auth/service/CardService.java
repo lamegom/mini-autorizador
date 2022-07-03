@@ -1,5 +1,7 @@
 package com.project.auth.service;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,16 +13,41 @@ public class CardService {
 	
 	@Autowired
 	private CardRepository repository;
-	
-	public void create(Card card) {
+
+	public Card findCard(String number) {
+		
+		return repository.findOneCardByNumber(number);
+		
+	}
+
+	public Card create(Card cartao) throws Exception {
+		
+		Card card = Card.builder()
+				.number(cartao.getNumber())
+				.password(cartao.getPassword())
+				.amount(500D)
+				.build();
 		
 		repository.save(card);
+		return card;
 	}
 	
-	public Card findCart(String number) {
+		public Card update(Card card) throws Exception {
 		
-		return repository.findCardByNumber(number);
+		repository.save(card);
+		return card;
+	}
+	
+	public Double verifyAmount (String numeroCartao) throws Exception {
 		
+	Card card = findCard(numeroCartao);
+		
+		if(Objects.isNull(card)) {
+				
+			throw new Exception ("cartao nao existe");	
+		}
+		
+		return card.getAmount();
 	}
 
 }

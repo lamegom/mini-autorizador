@@ -1,18 +1,21 @@
 package com.project.auth.repo;
 
-import java.util.List;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.project.auth.model.Card;
 
-import feign.Param;
-import feign.RequestLine;
 
+@FeignClient(name = "cardFeigClient", url = "http://localhost:8081", path = "cartoes")
 public interface CardFeignClient {
 	
-	    @RequestLine("GET /{number}")
-	    Card findByNumber(@Param("number") String number);
-
-	    @RequestLine("GET")
-	    List<Card> findAll();
-
+		@GetMapping(value = {"/card/{number}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	    Card findByNumber(@PathVariable("number") String number);
+		
+		@PatchMapping
+		Card updateAmount(@RequestBody Card card);
 	}

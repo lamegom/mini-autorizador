@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.project.auth.model.Card;
 import com.project.auth.model.Order;
 import com.project.auth.model.Transaction;
+import com.project.auth.repo.CardFeignClient;
 import com.project.auth.repo.TransactionRepository;
 
 @Component
@@ -18,6 +20,8 @@ public class Authorization {
     
 	@Autowired
 	private TransactionRepository repo;
+	@Autowired
+	private CardFeignClient feign;
 
     public void addObserver(Order order) {
         this.orders.add(order);
@@ -33,7 +37,16 @@ public class Authorization {
         	
         	String status = "OK";
         	try {
-        		o.authorize(this.transaction.getCard());
+        		
+        		Card card = this.transaction.getCard();
+        		Card actualCard = o.authorize(card);
+								System.out.println("card.getAmount()" + card.getAmount());
+
+				System.out.println("actualCard.getAmount()" + actualCard.getAmount());
+				
+				actualCard.setAmount(actualCard.getAmount() - card.getAmount());
+        		
+        		feign.updateAmount(actualCard);
         	}catch(Exception e) {
         		status = e.getLocalizedMessage();
         		

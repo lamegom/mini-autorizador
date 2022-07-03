@@ -18,9 +18,9 @@ public class Transaction implements Order {
 	private TransactionService service;
 	
 	@Override
-	public void authorize(Card card) throws Exception{
+	public Card authorize(Card card) throws Exception{
 		// TODO Auto-generated method stub
-		service.authorize(card);
+		return service.authorize(card);
 		
 	}
 

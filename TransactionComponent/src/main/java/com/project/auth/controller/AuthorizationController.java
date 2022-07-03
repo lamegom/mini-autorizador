@@ -10,30 +10,37 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.auth.model.Card;
 import com.project.auth.model.Transaction;
 import com.project.auth.service.Authorization;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("transacoes")
 public class AuthorizationController {
 	
 	@Autowired
-	private Authorization auth;
+	private Authorization observable;
+
+	@Autowired
+	private Transaction observer;
 	
 	@PostMapping
-	public ResponseEntity<?> authorize(Card card) {
+	public ResponseEntity<?> authorize(@RequestBody Card card) {
 		
 	try {	
-		Authorization observable = new Authorization();
-		Transaction observer = new Transaction();
+		
 		observer.setCard(card);
 
 		observable.addObserver(observer);
 		observable.setStatus(observer);
 		observer.getStatus();
+		observable.removeObserver(observer);
+
 		
-		return new ResponseEntity<>(null, HttpStatus.CREATED);
+		return new ResponseEntity<>("OK", HttpStatus.CREATED);
 		 
 	}catch(Exception e) {
-		 return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);	
+		e.printStackTrace();
+		 return new ResponseEntity<>(e.getCause() + ": " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);	
 		 }
 	}
 

@@ -1,33 +1,27 @@
+
 package com.project.auth.service;
 
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
 import org.springframework.stereotype.Service;
 
 import com.project.auth.model.Card;
+import com.project.auth.repo.CardFeignClient;
 
-import feign.Feign;
-import feign.Logger;
-import feign.gson.GsonDecoder;
-import feign.gson.GsonEncoder;
-import feign.okhttp.OkHttpClient;
-import feign.slf4j.Slf4jLogger;
+import org.springframework.cloud.openfeign.support.SpringMvcContract;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 @Service
 public class TransactionService {
 	
 
+@Autowired
+private CardFeignClient cardFeignClient;
+
 	
-	public void authorize(Card card) throws Exception{
-		Card actualCard = Feign.builder()
-				  .client(new OkHttpClient())
-				  .encoder(new GsonEncoder())
-				  .decoder(new GsonDecoder())
-				  .logger(new Slf4jLogger(Card.class))
-				  .logLevel(Logger.Level.FULL)
-				  .target(Card.class, "http://localhost:8081/card/" + card.getNumber());
+	public Card authorize(Card card) throws Exception{
+		Card actualCard = cardFeignClient.findByNumber(card.getNumber());
 		
 		if(Objects.isNull(actualCard)) {
 			
@@ -46,7 +40,7 @@ public class TransactionService {
 			throw new Exception("SALDO_INSUFICIENTE");
 		}
 		
-		
+		return actualCard;
 	}
 
 

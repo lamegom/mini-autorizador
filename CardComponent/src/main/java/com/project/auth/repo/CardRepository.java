@@ -8,5 +8,5 @@ import com.project.auth.model.Card;
 @Repository
 public interface CardRepository extends JpaRepository<Card, Long> {
 
-	Card findCardByNumber(String number);
+	Card findOneCardByNumber(String number);
 }
